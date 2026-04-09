@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Aetherbound E Rank Raid - Battle</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 40px auto;
+            padding: 0 20px;
+        }
+        .stats {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 20px;
+        }
+        .stat {
+            border: 1px solid #ccc;
+            padding: 10px;
+            border-radius: 5px;
+        }
+        .actions {
+            margin-bottom: 20px;
+        }
+        button {
+            font-size: 16px;
+            padding: 10px 18px;
+            margin-right: 10px;
+            cursor: pointer;
+        }
+        pre {
+            white-space: pre-wrap;
+            background: #f8f8f8;
+            padding: 18px;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            max-height: 300px;
+            overflow-y: auto;
+        }
+    </style>
+</head>
+<body>
+    <h1>Aetherbound E Rank Raid - Battle</h1>
+    
+    <div class="stats">
+        <div class="stat">
+            <h3>Player: {{ player.name }}</h3>
+            <p>HP: {{ player.hp }}</p>
+            <p>MP: {{ player.mp }}</p>
+            <p>ATK: {{ player.atk }}</p>
+            <p>Spells: {{ player.spells | join(', ') or 'None' }}</p>
+        </div>
+        <div class="stat">
+            <h3>Monster: {{ monster.name }}</h3>
+            <p>HP: {{ monster.hp }}</p>
+            <p>ATK: {{ monster.atk }}</p>
+            <p>Type: {{ monster.type }}</p>
+        </div>
+    </div>
+    
+    <div class="actions">
+        {% if phase == 'player' %}
+        <form action="/action" method="post">
+            <button type="submit" name="action" value="attack">Attack</button>
+            <label for="spell_choice">Choose spell:</label>
+            <select id="spell_choice" name="spell_choice">
+                <option value="">None</option>
+                {% for spell in spell_options %}
+                <option value="{{ spell }}">{{ spell|capitalize }}</option>
+                {% endfor %}
+            </select>
+            <button type="submit" name="action" value="spell">Use Spell</button>
+        </form>
+        {% elif phase == 'defense' %}
+        <p>The enemy is attacking! Use your defensive spell or skip.</p>
+        <form action="/action" method="post">
+            <label for="spell_choice">Choose defense spell:</label>
+            <select id="spell_choice" name="spell_choice">
+                <option value="">None</option>
+                {% for spell in defense_spells %}
+                <option value="{{ spell }}">{{ spell|capitalize }}</option>
+                {% endfor %}
+            </select>
+            <button type="submit" name="action" value="spell">Use Defense</button>
+            <button type="submit" name="action" value="skip">Skip Defense</button>
+        </form>
+        {% endif %}
+    </div>
+    
+    <h3>Battle Log</h3>
+    <pre>{{ logs | join('\n') }}</pre>
+</body>
+</html>
